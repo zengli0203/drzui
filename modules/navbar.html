@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航栏</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            position: relative;
+            background: white;
+            border-radius: 36px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+        }
+        .capsule {
+            position: absolute;
+            top: 0;
+            right: 12px;
+            width: 90px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            z-index: 100;
+            margin-top: 10px;
+        }
+        .nav-container {
+            border-top: 1px solid rgba(229, 231, 235, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+        .nav-item.active {
+            color: #3B82F6;
+        }
+        .nav-item.active .icon {
+            color: #3B82F6;
+        }
+        .floating-button {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup mx-auto">
+        <div class="capsule"></div>
+        
+        <!-- 页面内容区域（灰色占位） -->
+        <div class="bg-gray-100 h-full flex items-center justify-center">
+            <p class="text-gray-400 text-center">页面内容区域</p>
+        </div>
+        
+        <!-- 拍照按钮 -->
+        <button class="floating-button bg-blue-500 text-white" title="拍照记录饮食">
+            <i class="fas fa-camera text-xl"></i>
+        </button>
+        
+        <!-- 底部导航栏 -->
+        <div class="nav-container fixed bottom-0 left-0 right-0 px-2 py-2">
+            <div class="flex justify-around items-center">
+                <!-- 首页 -->
+                <a href="#" class="nav-item active flex flex-col items-center py-1 px-3" title="首页">
+                    <i class="fas fa-home text-xl mb-1 icon"></i>
+                    <span class="text-xs">首页</span>
+                </a>
+                
+                <!-- 数据记录 -->
+                <a href="#" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="数据记录">
+                    <i class="fas fa-chart-line text-xl mb-1 icon"></i>
+                    <span class="text-xs">数据</span>
+                </a>
+                
+                <!-- 个人中心 -->
+                <a href="#" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="个人中心">
+                    <i class="fas fa-user text-xl mb-1 icon"></i>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 示例：完整导航效果（水平） -->
+    <div class="mt-10 p-4 bg-white rounded-lg shadow-sm max-w-lg mx-auto">
+        <h2 class="text-lg font-medium text-gray-700 mb-4">导航栏样式变体</h2>
+        
+        <div class="nav-container bg-white py-2 rounded-lg border">
+            <div class="flex justify-around items-center">
+                <a href="#" class="nav-item active flex flex-col items-center py-1 px-3" title="首页">
+                    <i class="fas fa-home text-xl mb-1 icon"></i>
+                    <span class="text-xs">首页</span>
+                </a>
+                <a href="#" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="数据记录">
+                    <i class="fas fa-chart-line text-xl mb-1 icon"></i>
+                    <span class="text-xs">数据</span>
+                </a>
+                <a href="#" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="个人中心">
+                    <i class="fas fa-user text-xl mb-1 icon"></i>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="mt-4 nav-container bg-gray-100 py-2 rounded-lg">
+            <div class="flex justify-around items-center">
+                <a href="#" class="nav-item active flex flex-col items-center py-1 px-3" title="首页">
+                    <span class="bg-blue-500 rounded-full w-10 h-10 flex items-center justify-center mb-1">
+                        <i class="fas fa-home text-xl text-white"></i>
+                    </span>
+                    <span class="text-xs">首页</span>
+                </a>
+                <a href="#" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="数据记录">
+                    <span class="bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center mb-1">
+                        <i class="fas fa-chart-line text-xl text-gray-500"></i>
+                    </span>
+                    <span class="text-xs">数据</span>
+                </a>
+                <a href="#" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="个人中心">
+                    <span class="bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center mb-1">
+                        <i class="fas fa-user text-xl text-gray-500"></i>
+                    </span>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

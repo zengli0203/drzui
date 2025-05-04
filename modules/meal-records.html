@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>当日餐食记录</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            position: relative;
+            background: white;
+            border-radius: 36px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+        }
+        .capsule {
+            position: absolute;
+            top: 0;
+            right: 12px;
+            width: 90px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            z-index: 100;
+            margin-top: 10px;
+        }
+        .meal-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .meal-card {
+            border-radius: 16px;
+            transition: transform 0.2s ease;
+        }
+        .meal-card:active {
+            transform: scale(0.98);
+        }
+        .mini-nutrient {
+            width: 28px;
+            height: 4px;
+            border-radius: 2px;
+        }
+        .meal-time-tag {
+            border-radius: 12px;
+            font-size: 10px;
+            padding: 2px 8px;
+        }
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup mx-auto">
+        <div class="capsule"></div>
+        
+        <div class="pt-14 px-5 pb-24 overflow-y-auto h-full">
+            <h1 class="text-2xl font-semibold text-gray-800 mb-6">今日餐食记录</h1>
+            
+            <!-- 餐食类别标签 -->
+            <div class="flex overflow-x-auto py-2 mb-4 no-scrollbar">
+                <button class="flex-shrink-0 px-4 py-1.5 bg-blue-500 text-white rounded-full text-sm mr-2">全部</button>
+                <button class="flex-shrink-0 px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm mr-2">早餐</button>
+                <button class="flex-shrink-0 px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm mr-2">午餐</button>
+                <button class="flex-shrink-0 px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm mr-2">晚餐</button>
+                <button class="flex-shrink-0 px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm">夜宵</button>
+            </div>
+            
+            <!-- 早餐记录 -->
+            <div class="mb-6">
+                <h2 class="text-lg font-medium text-gray-700 mb-3">早餐</h2>
+                
+                <!-- 食物卡片1 -->
+                <div class="meal-card bg-white p-4 shadow-sm mb-3 flex">
+                    <img src="https://images.unsplash.com/photo-1619096252214-ef06c45683e3?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="牛奶麦片" class="meal-image mr-3">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-medium text-gray-800">牛奶燕麦粥</h3>
+                            <span class="meal-time-tag bg-blue-50 text-blue-500">07:30</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-2">包含燕麦片、牛奶、蓝莓</p>
+                        
+                        <!-- 营养素比例小条 -->
+                        <div class="flex space-x-1 mb-2">
+                            <div class="mini-nutrient bg-blue-400" style="width: 20%"></div>
+                            <div class="mini-nutrient bg-yellow-400" style="width: 30%"></div>
+                            <div class="mini-nutrient bg-green-400" style="width: 50%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-3">
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">12克</span> 蛋白质
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">8克</span> 脂肪
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">45克</span> 碳水
+                                </div>
+                            </div>
+                            <div class="text-base font-semibold text-blue-500">320千卡</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 食物卡片2 -->
+                <div class="meal-card bg-white p-4 shadow-sm flex">
+                    <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="鸡蛋" class="meal-image mr-3">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-medium text-gray-800">水煮鸡蛋</h3>
+                            <span class="meal-time-tag bg-blue-50 text-blue-500">07:45</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-2">2个水煮鸡蛋</p>
+                        
+                        <!-- 营养素比例小条 -->
+                        <div class="flex space-x-1 mb-2">
+                            <div class="mini-nutrient bg-blue-400" style="width: 60%"></div>
+                            <div class="mini-nutrient bg-yellow-400" style="width: 40%"></div>
+                            <div class="mini-nutrient bg-green-400" style="width: 0%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-3">
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">12克</span> 蛋白质
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">10克</span> 脂肪
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">1克</span> 碳水
+                                </div>
+                            </div>
+                            <div class="text-base font-semibold text-blue-500">140千卡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 午餐记录 -->
+            <div class="mb-6">
+                <h2 class="text-lg font-medium text-gray-700 mb-3">午餐</h2>
+                
+                <!-- 食物卡片 -->
+                <div class="meal-card bg-white p-4 shadow-sm flex">
+                    <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="炒饭" class="meal-image mr-3">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-medium text-gray-800">杂蔬鸡肉炒饭</h3>
+                            <span class="meal-time-tag bg-blue-50 text-blue-500">12:30</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-2">包含米饭、鸡胸肉、胡萝卜、豌豆</p>
+                        
+                        <!-- 营养素比例小条 -->
+                        <div class="flex space-x-1 mb-2">
+                            <div class="mini-nutrient bg-blue-400" style="width: 25%"></div>
+                            <div class="mini-nutrient bg-yellow-400" style="width: 15%"></div>
+                            <div class="mini-nutrient bg-green-400" style="width: 60%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-3">
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">30克</span> 蛋白质
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">12克</span> 脂肪
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">75克</span> 碳水
+                                </div>
+                            </div>
+                            <div class="text-base font-semibold text-blue-500">530千卡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 晚餐记录 -->
+            <div>
+                <h2 class="text-lg font-medium text-gray-700 mb-3">晚餐</h2>
+                
+                <!-- 食物卡片 -->
+                <div class="meal-card bg-white p-4 shadow-sm flex">
+                    <img src="https://images.unsplash.com/photo-1574484284002-952d92456975?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80" alt="沙拉" class="meal-image mr-3">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-medium text-gray-800">三文鱼蔬菜沙拉</h3>
+                            <span class="meal-time-tag bg-blue-50 text-blue-500">18:45</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-2">包含生菜、三文鱼、番茄、黄瓜、橄榄油</p>
+                        
+                        <!-- 营养素比例小条 -->
+                        <div class="flex space-x-1 mb-2">
+                            <div class="mini-nutrient bg-blue-400" style="width: 40%"></div>
+                            <div class="mini-nutrient bg-yellow-400" style="width: 45%"></div>
+                            <div class="mini-nutrient bg-green-400" style="width: 15%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-3">
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">44克</span> 蛋白质
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">35克</span> 脂肪
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="font-medium text-gray-700">18克</span> 碳水
+                                </div>
+                            </div>
+                            <div class="text-base font-semibold text-blue-500">560千卡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 浮动拍照按钮 -->
+            <button class="floating-button bg-blue-500 text-white" title="拍照记录饮食">
+                <i class="fas fa-camera text-xl"></i>
+            </button>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扫描页面 - Doro卡卡</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #000;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            position: relative;
+            background: black;
+            border-radius: 36px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #111;
+        }
+        .status-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            z-index: 100;
+        }
+        .scan-frame {
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            width: 320px;
+            height: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+        .scan-corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: #22c55e;
+            border-style: solid;
+            border-width: 0;
+        }
+        .scan-corner.top-left {
+            top: 0;
+            left: 0;
+            border-top-width: 2px;
+            border-left-width: 2px;
+        }
+        .scan-corner.top-right {
+            top: 0;
+            right: 0;
+            border-top-width: 2px;
+            border-right-width: 2px;
+        }
+        .scan-corner.bottom-left {
+            bottom: 0;
+            left: 0;
+            border-bottom-width: 2px;
+            border-left-width: 2px;
+        }
+        .scan-corner.bottom-right {
+            bottom: 0;
+            right: 0;
+            border-bottom-width: 2px;
+            border-right-width: 2px;
+        }
+        .scan-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(34, 197, 94, 0), rgba(34, 197, 94, 0.8), rgba(34, 197, 94, 0));
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: calc(100% - 2px); }
+            100% { top: 0; }
+        }
+        .camera-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 20;
+        }
+        .camera-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+        .camera-button::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        .flash-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+        .scan-options {
+            position: absolute;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .option-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        .option-icon.active {
+            background-color: #e5e7eb;
+        }
+        .edit-button {
+            position: absolute;
+            bottom: 110px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ffb950;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .preview-mode {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: black;
+            z-index: 40;
+        }
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .preview-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .header-bar {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            z-index: 100;
+        }
+        .flash-tooltip {
+            position: absolute;
+            bottom: 70px;
+            left: 22px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .flash-tooltip.show {
+            opacity: 1;
+        }
+        .flash-options {
+            position: absolute;
+            bottom: 70px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            padding: 10px;
+            display: none;
+        }
+        .flash-option {
+            color: white;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .flash-option:last-child {
+            margin-bottom: 0;
+        }
+        .flash-option.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .flash-option i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup mx-auto">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="flex items-center">
+                <i class="fas fa-signal mr-1"></i>
+                <i class="fas fa-wifi mr-1"></i>
+                <i class="fas fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 顶部导航 -->
+        <div class="header-bar">
+            <a href="javascript:history.back()" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
+                <i class="fas fa-arrow-left text-white"></i>
+            </a>
+            <h1 class="text-white text-lg font-medium">扫描</h1>
+            <button class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">
+                <i class="fas fa-ellipsis-h text-white"></i>
+            </button>
+        </div>
+        
+        <!-- 相机取景器 -->
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="scan-frame">
+                <!-- 扫描框四角 -->
+                <div class="scan-corner top-left"></div>
+                <div class="scan-corner top-right"></div>
+                <div class="scan-corner bottom-left"></div>
+                <div class="scan-corner bottom-right"></div>
+                
+                <!-- 扫描线 -->
+                <div class="scan-line"></div>
+            </div>
+        </div>
+        
+        <!-- 扫描选项栏 -->
+        <div class="scan-options">
+            <div class="option-icon active">
+                <i class="fas fa-camera text-gray-800"></i>
+            </div>
+            <div class="option-icon">
+                <i class="fas fa-barcode text-gray-500"></i>
+            </div>
+            <div class="option-icon">
+                <i class="fas fa-images text-gray-500"></i>
+            </div>
+            <div class="option-icon">
+                <i class="fas fa-bookmark text-gray-500"></i>
+            </div>
+        </div>
+        
+        <!-- 编辑按钮 -->
+        <button class="edit-button">
+            <i class="fas fa-pencil-alt text-white"></i>
+        </button>
+        
+        <!-- 相机控制按钮 -->
+        <div class="camera-controls">
+            <!-- 闪光灯按钮 -->
+            <button class="flash-button text-white" id="flash-button">
+                <i class="fas fa-bolt text-2xl" id="flash-icon"></i>
+            </button>
+            
+            <!-- 闪光灯提示 -->
+            <div class="flash-tooltip" id="flash-tooltip">自动</div>
+            
+            <!-- 闪光灯选项 -->
+            <div class="flash-options" id="flash-options">
+                <div class="flash-option" data-mode="auto">
+                    <i class="fas fa-bolt"></i>
+                    <span>自动</span>
+                </div>
+                <div class="flash-option" data-mode="on">
+                    <i class="fas fa-bolt"></i>
+                    <span>开启</span>
+                </div>
+                <div class="flash-option" data-mode="off">
+                    <i class="fas fa-bolt-slash"></i>
+                    <span>关闭</span>
+                </div>
+            </div>
+            
+            <!-- 拍照按钮 -->
+            <button class="camera-button" id="take-photo-btn"></button>
+            
+            <!-- 占位元素保持布局平衡 -->
+            <div class="w-10 h-10"></div>
+        </div>
+        
+        <!-- 底部文字提示 -->
+        <div class="absolute bottom-28 left-0 right-0 flex justify-center">
+            <div class="bg-white bg-opacity-90 px-4 py-2 rounded-full shadow-md">
+                <span class="text-sm font-medium">扫描食物</span>
+            </div>
+        </div>
+        
+        <!-- 照片预览模式 -->
+        <div class="preview-mode" id="preview-mode">
+            <img src="" alt="预览照片" class="preview-image" id="preview-image">
+            <div class="preview-controls">
+                <button class="bg-red-500 text-white px-6 py-2 rounded-full" id="retake-button">重拍</button>
+                <button class="bg-green-500 text-white px-6 py-2 rounded-full" id="confirm-button">确认使用</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const takePhotoBtn = document.getElementById('take-photo-btn');
+            const previewMode = document.getElementById('preview-mode');
+            const previewImage = document.getElementById('preview-image');
+            const retakeButton = document.getElementById('retake-button');
+            const confirmButton = document.getElementById('confirm-button');
+            const flashButton = document.getElementById('flash-button');
+            const flashIcon = document.getElementById('flash-icon');
+            const flashTooltip = document.getElementById('flash-tooltip');
+            const flashOptions = document.getElementById('flash-options');
+            
+            // 闪光灯状态
+            let flashState = 'auto'; // 'auto', 'on', 'off'
+            let flashOptionsVisible = false;
+            
+            // 闪光灯按钮点击
+            flashButton.addEventListener('click', function() {
+                if (flashOptionsVisible) {
+                    flashOptions.style.display = 'none';
+                    flashOptionsVisible = false;
+                } else {
+                    flashOptions.style.display = 'block';
+                    flashOptionsVisible = true;
+                    
+                    // 显示当前状态
+                    document.querySelectorAll('.flash-option').forEach(option => {
+                        if (option.dataset.mode === flashState) {
+                            option.classList.add('active');
+                        } else {
+                            option.classList.remove('active');
+                        }
+                    });
+                }
+            });
+            
+            // 闪光灯选项点击
+            document.querySelectorAll('.flash-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    flashState = this.dataset.mode;
+                    updateFlashUI();
+                    flashOptions.style.display = 'none';
+                    flashOptionsVisible = false;
+                    
+                    // 显示提示
+                    flashTooltip.textContent = this.querySelector('span').textContent;
+                    flashTooltip.classList.add('show');
+                    setTimeout(() => {
+                        flashTooltip.classList.remove('show');
+                    }, 1500);
+                });
+            });
+            
+            // 更新闪光灯UI
+            function updateFlashUI() {
+                flashIcon.className = ''; // 清除所有类
+                
+                if (flashState === 'auto') {
+                    flashIcon.className = 'fas fa-bolt text-2xl';
+                    flashIcon.style.color = 'white';
+                } else if (flashState === 'on') {
+                    flashIcon.className = 'fas fa-bolt text-2xl';
+                    flashIcon.style.color = '#ffc107';
+                } else if (flashState === 'off') {
+                    flashIcon.className = 'fas fa-bolt-slash text-2xl';
+                    flashIcon.style.color = 'white';
+                }
+            }
+            
+            // 点击其他地方关闭闪光灯选项
+            document.addEventListener('click', function(event) {
+                if (flashOptionsVisible && !flashButton.contains(event.target) && !flashOptions.contains(event.target)) {
+                    flashOptions.style.display = 'none';
+                    flashOptionsVisible = false;
+                }
+            });
+            
+            // 模拟拍照功能
+            takePhotoBtn.addEventListener('click', function() {
+                // 模拟拍照，这里使用一个示例图片
+                previewImage.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';
+                // 显示预览模式
+                previewMode.style.display = 'block';
+            });
+            
+            // 重拍按钮
+            retakeButton.addEventListener('click', function() {
+                // 隐藏预览模式
+                previewMode.style.display = 'none';
+            });
+            
+            // 确认使用按钮
+            confirmButton.addEventListener('click', function() {
+                // 跳转到编辑餐食页面
+                window.location.href = 'meal-edit.html?source=camera';
+            });
+            
+            // 选项图标点击
+            document.querySelectorAll('.option-icon').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    // 移除所有active类
+                    document.querySelectorAll('.option-icon').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    // 为当前点击的图标添加active类
+                    this.classList.add('active');
+                    
+                    // 如果点击的是图库图标
+                    if (this.querySelector('.fa-images')) {
+                        window.location.href = 'meal-edit.html?source=upload';
+                    }
+                });
+            });
+            
+            // 编辑按钮点击
+            document.querySelector('.edit-button').addEventListener('click', function() {
+                window.location.href = 'meal-edit.html?source=skip';
+            });
+        });
+    </script>
+</body>
+</html> 
