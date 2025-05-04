@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>展示页 - Doro卡卡</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            position: relative;
+            background: white;
+            border-radius: 36px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #eaeaea;
+        }
+        .capsule {
+            position: absolute;
+            top: 0;
+            right: 12px;
+            width: 90px;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            z-index: 100;
+            margin-top: 10px;
+        }
+        .content-area {
+            height: calc(100% - 60px);
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .content-area::-webkit-scrollbar {
+            display: none;
+        }
+        .nav-container {
+            border-top: 1px solid rgba(229, 231, 235, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            height: 60px;
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+        .nav-item.active {
+            color: #3B82F6;
+        }
+        .nav-item.active .icon {
+            color: #3B82F6;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+        }
+        .nutrient-tag {
+            border-radius: 12px;
+            font-size: 12px;
+            padding: 2px 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup mx-auto">
+        <div class="capsule"></div>
+        
+        <!-- 内容区域 -->
+        <div class="content-area pt-8 pb-16">
+            <div class="px-4 mb-4">
+                <h1 class="text-xl font-medium text-gray-800">营养总览</h1>
+            </div>
+            
+            <!-- 热量总览卡片 -->
+            <div class="bg-white rounded-xl p-4 mx-4 shadow-sm mb-4">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                            <i class="fas fa-fire text-blue-500"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">今日热量</div>
+                            <div class="text-2xl font-bold text-blue-500">1146.8</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                            <i class="fas fa-plus-minus text-green-500"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">热量盈余</div>
+                            <div class="text-2xl font-bold text-green-500">-453.2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 营养素图表 -->
+                <div class="chart-container mb-4">
+                    <canvas id="nutrientChart"></canvas>
+                </div>
+                
+                <!-- 营养素标签 -->
+                <div class="flex flex-wrap gap-2 mb-3">
+                    <span class="nutrient-tag bg-blue-100 text-blue-700">碳水 137g</span>
+                    <span class="nutrient-tag bg-green-100 text-green-700">蛋白质 40.6g</span>
+                    <span class="nutrient-tag bg-yellow-100 text-yellow-700">脂肪 29.1g</span>
+                    <span class="nutrient-tag bg-purple-100 text-purple-700">糖 12g</span>
+                    <span class="nutrient-tag bg-red-100 text-red-700">钠 1.8g</span>
+                </div>
+            </div>
+            
+            <!-- 饮食评价卡片 -->
+            <div class="bg-white rounded-xl p-4 mx-4 shadow-sm mb-4">
+                <div class="flex items-center mb-3">
+                    <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
+                        <i class="fas fa-comment-dots text-green-500"></i>
+                    </div>
+                    <h2 class="text-lg font-medium">今日饮食评价</h2>
+                </div>
+                
+                <div class="p-3 bg-gray-50 rounded-lg mb-3">
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                        今天的碳水摄入超标了，但蛋白质摄入略低。建议晚餐适当减少碳水，增加蛋白质食物。整体热量控制不错，继续保持！
+                    </p>
+                </div>
+                
+                <!-- 评分 -->
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-sm text-gray-500">今日营养得分</div>
+                    <div class="flex items-center">
+                        <div class="text-lg font-bold text-green-500 mr-2">82</div>
+                        <div class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full">良好</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 餐食构成建议 -->
+            <div class="bg-white rounded-xl p-4 mx-4 shadow-sm mb-4">
+                <div class="flex items-center mb-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                        <i class="fas fa-utensils text-blue-500"></i>
+                    </div>
+                    <h2 class="text-lg font-medium">下餐建议</h2>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-3 mb-3">
+                    <h3 class="font-medium text-blue-700 mb-2">晚餐建议</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span class="text-sm">鸡胸肉 (100g) - 提供优质蛋白质</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span class="text-sm">绿叶蔬菜 (200g) - 补充维生素和矿物质</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                            <span class="text-sm">藜麦 (50g) - 适量优质碳水</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                            <span class="text-sm">避免淀粉类食物（米饭、面条）</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button class="flex items-center text-blue-500 text-sm" title="查看更多建议">
+                        <i class="fas fa-external-link-alt mr-1"></i>
+                        <span>查看更多建议</span>
+                    </button>
+                    <button class="flex items-center text-green-500 text-sm" title="保存到收藏">
+                        <i class="far fa-bookmark mr-1"></i>
+                        <span>保存建议</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航栏 -->
+        <div class="nav-container fixed bottom-0 left-0 right-0 px-2 py-2">
+            <div class="flex justify-around items-center">
+                <!-- 展示页 - 当前页面 -->
+                <a href="dashboard.html" class="nav-item active flex flex-col items-center py-1 px-3" title="展示页">
+                    <i class="fas fa-chart-pie text-xl icon"></i>
+                </a>
+                
+                <!-- 首页 -->
+                <a href="../index.html" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="首页">
+                    <i class="fas fa-utensils text-xl icon"></i>
+                </a>
+                
+                <!-- 数据页 -->
+                <a href="data.html" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="数据页">
+                    <i class="fas fa-chart-line text-xl icon"></i>
+                </a>
+                
+                <!-- 个人主页 -->
+                <a href="profile.html" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="个人主页">
+                    <i class="fas fa-user text-xl icon"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 浮动拍照按钮 -->
+        <a href="camera.html" class="floating-button bg-green-500 text-white fixed bottom-24 right-6 shadow-lg" style="width: 56px; height: 56px; border-radius: 28px; display: flex; align-items: center; justify-content: center; z-index: 1000;" title="拍照记录饮食">
+            <i class="fas fa-camera text-xl"></i>
+        </a>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 营养素比例饼图
+            const ctx = document.getElementById('nutrientChart').getContext('2d');
+            const nutrientChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['碳水', '蛋白质', '脂肪'],
+                    datasets: [{
+                        data: [137, 40.6, 29.1],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',  // 蓝色 - 碳水
+                            'rgba(16, 185, 129, 0.7)',  // 绿色 - 蛋白质
+                            'rgba(245, 158, 11, 0.7)'   // 黄色 - 脂肪
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 10,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value}g (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%',
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
