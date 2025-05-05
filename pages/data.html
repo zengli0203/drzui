@@ -90,6 +90,23 @@
             font-size: 8px;
             color: rgba(0, 0, 0, 0.5);
         }
+        .time-filter-btn.active {
+            background-color: white;
+            color: #374151;
+            font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .data-type-card {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .data-type-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .data-type-card.active {
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -99,7 +116,7 @@
         <!-- 内容区域 -->
         <div class="content-area pt-8 pb-16">
             <div class="px-4 mb-4">
-                <h1 class="text-xl font-medium text-gray-800">数据与趋势</h1>
+                <h1 class="text-xl font-medium text-gray-800">身体档案</h1>
             </div>
             
             <!-- 月历视图 -->
@@ -206,98 +223,143 @@
                 </div>
             </div>
             
-            <!-- 折线图卡片 -->
-            <div class="bg-white rounded-xl p-4 mx-4 shadow-sm mb-4">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-lg font-medium">饮食趋势</h2>
-                    <div class="relative">
-                        <select class="text-sm bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 pr-8 appearance-none" title="选择时间范围">
-                            <option>近7天</option>
-                            <option>近30天</option>
-                            <option>近90天</option>
-                        </select>
-                        <div class="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 热量趋势图 -->
-                <div class="chart-container">
-                    <canvas id="calorieChart"></canvas>
-                </div>
-                
-                <!-- 统计信息 -->
-                <div class="grid grid-cols-3 gap-2 mb-2">
-                    <div class="bg-gray-50 rounded-lg p-2 text-center">
-                        <div class="text-xs text-gray-500">平均热量</div>
-                        <div class="text-base font-semibold text-blue-500">1280</div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-2 text-center">
-                        <div class="text-xs text-gray-500">最高热量</div>
-                        <div class="text-base font-semibold text-red-500">2250</div>
-                    </div>
-                    <div class="bg-gray-50 rounded-lg p-2 text-center">
-                        <div class="text-xs text-gray-500">最低热量</div>
-                        <div class="text-base font-semibold text-green-500">1050</div>
-                    </div>
+            <!-- 时间段选择器 -->
+            <div class="bg-white rounded-xl mx-4 mb-4 p-2 flex justify-center">
+                <div class="grid grid-cols-4 w-full bg-gray-100 rounded-lg overflow-hidden">
+                    <button class="time-filter-btn active py-2 px-3 text-center text-sm font-medium">近30天</button>
+                    <button class="time-filter-btn py-2 px-3 text-center text-sm font-medium text-gray-500">半年</button>
+                    <button class="time-filter-btn py-2 px-3 text-center text-sm font-medium text-gray-500">年</button>
+                    <button class="time-filter-btn py-2 px-3 text-center text-sm font-medium text-gray-500">全部</button>
                 </div>
             </div>
             
-            <!-- 体重趋势图 -->
-            <div class="bg-white rounded-xl p-4 mx-4 shadow-sm mb-4">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-lg font-medium">体重记录</h2>
-                    <button class="text-sm bg-blue-50 text-blue-500 rounded-lg px-3 py-1" title="添加体重记录">
-                        <i class="fas fa-plus mr-1"></i>添加记录
-                    </button>
+            <!-- 数据指标标题和操作栏 -->
+            <div class="bg-white rounded-xl p-4 mx-4 shadow-sm mb-2">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center">
+                        <span class="text-xl font-medium mr-1">体重：</span>
+                        <span class="text-xl font-medium text-green-500">73.8</span>
+                        <span class="text-lg ml-1">公斤</span>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <!-- 查看图片按钮 -->
+                        <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" title="查看身材图片">
+                            <i class="fas fa-image text-gray-500"></i>
+                        </button>
+                        
+                        <!-- 添加数据按钮 -->
+                        <button class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center" id="add-data-btn" title="添加数据">
+                            <i class="fas fa-plus text-white"></i>
+                        </button>
+                        
+                        <!-- 分享按钮 -->
+                        <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" title="分享">
+                            <i class="fas fa-share-alt text-gray-500"></i>
+                        </button>
+                        
+                        <!-- 全屏按钮 -->
+                        <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center" title="全屏显示">
+                            <i class="fas fa-expand text-gray-500"></i>
+                        </button>
+                    </div>
                 </div>
                 
-                <div class="chart-container">
-                    <canvas id="weightChart"></canvas>
-                </div>
-                
-                <!-- 目标进度 -->
-                <div class="bg-gray-50 rounded-lg p-3">
-                    <div class="flex justify-between mb-1">
-                        <span class="text-sm text-gray-500">目标体重进度</span>
-                        <span class="text-sm font-medium">68.5kg / 65kg</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-500 h-2 rounded-full" style="width: 35%"></div>
-                    </div>
-                    <div class="text-xs text-gray-500 mt-2">还需要减少3.5kg，预计需要5周</div>
+                <!-- 数据图表 -->
+                <div class="chart-container" style="height: 240px;">
+                    <canvas id="weightTrendChart"></canvas>
                 </div>
             </div>
             
-            <!-- 其他身体指标 -->
-            <div class="bg-white rounded-xl p-4 mx-4 shadow-sm mb-4">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-lg font-medium">身体指标</h2>
-                    <div class="relative">
-                        <select class="text-sm bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 pr-8 appearance-none" title="选择身体指标类型">
-                            <option>体脂率</option>
-                            <option>BMI</option>
-                            <option>腰围</option>
-                        </select>
-                        <div class="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
-                        </div>
+            <!-- 数据类型选择按钮组 -->
+            <div class="grid grid-cols-2 gap-3 mx-4 mb-4">
+                <!-- 体重数据 - 当前选中 -->
+                <div class="data-type-card bg-green-50 border-green-500 border rounded-xl p-3 shadow-sm active">
+                    <div class="text-sm text-gray-500">体重</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold text-green-500">73.8</div>
+                        <div class="text-xs text-gray-500">公斤</div>
                     </div>
                 </div>
                 
-                <div class="chart-container">
-                    <canvas id="bodyStatsChart"></canvas>
+                <!-- BMI数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">BMI</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">25.5</div>
+                        <div class="text-xs text-gray-500">偏胖</div>
+                    </div>
                 </div>
                 
-                <!-- 当前状态 -->
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="text-xs text-gray-500">当前体脂率</div>
-                        <div class="text-lg font-medium">22.8%</div>
+                <!-- 胸围数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">胸围</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">95.0</div>
+                        <div class="text-xs text-gray-500">cm</div>
                     </div>
-                    <div class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
-                        标准范围内
+                </div>
+                
+                <!-- 腰围数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">腰围</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">88.0</div>
+                        <div class="text-xs text-gray-500">cm</div>
+                    </div>
+                </div>
+                
+                <!-- 臀围数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">臀围</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">98.5</div>
+                        <div class="text-xs text-gray-500">cm</div>
+                    </div>
+                </div>
+                
+                <!-- 手臂围数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">手臂围</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">28.0</div>
+                        <div class="text-xs text-gray-500">cm</div>
+                    </div>
+                </div>
+                
+                <!-- 大腿围数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">大腿围</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">57.5</div>
+                        <div class="text-xs text-gray-500">cm</div>
+                    </div>
+                </div>
+                
+                <!-- 小腿围数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">小腿围</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">36.0</div>
+                        <div class="text-xs text-gray-500">cm</div>
+                    </div>
+                </div>
+                
+                <!-- 身高数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">身高</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">170</div>
+                        <div class="text-xs text-gray-500">cm</div>
+                    </div>
+                </div>
+                
+                <!-- 体脂率数据 -->
+                <div class="data-type-card bg-white border border-gray-200 rounded-xl p-3 shadow-sm">
+                    <div class="text-sm text-gray-500">体脂率</div>
+                    <div class="flex justify-between items-baseline">
+                        <div class="text-lg font-semibold">22.8</div>
+                        <div class="text-xs text-gray-500">%</div>
                     </div>
                 </div>
             </div>
@@ -311,8 +373,8 @@
                     <i class="fas fa-chart-pie text-xl icon"></i>
                 </a>
                 
-                <!-- 首页 -->
-                <a href="../index.html" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="首页">
+                <!-- 餐食记录 -->
+                <a href="../main.html" class="nav-item flex flex-col items-center py-1 px-3 text-gray-500" title="餐食记录">
                     <i class="fas fa-utensils text-xl icon"></i>
                 </a>
                 
@@ -328,59 +390,132 @@
             </div>
         </div>
         
-        <!-- 浮动拍照按钮 -->
-        <a href="camera.html" class="floating-button bg-green-500 text-white fixed bottom-24 right-6 shadow-lg" style="width: 56px; height: 56px; border-radius: 28px; display: flex; align-items: center; justify-content: center; z-index: 1000;" title="拍照记录饮食">
-            <i class="fas fa-camera text-xl"></i>
-        </a>
+        <!-- 浮动加号按钮 -->
+        <button id="add-data-btn" class="floating-button bg-green-500 text-white fixed bottom-24 right-6 shadow-lg" style="width: 56px; height: 56px; border-radius: 28px; display: flex; align-items: center; justify-content: center; z-index: 1000;" title="录入身体数据">
+            <i class="fas fa-plus text-xl"></i>
+        </button>
+        
+        <!-- 录入身体数据模态框 -->
+        <div id="body-data-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl p-4 w-11/12 max-w-md max-h-90vh overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium">录入身体数据</h3>
+                    <button id="close-body-data" class="text-gray-500" title="关闭">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="body-data-form" class="space-y-4">
+                    <!-- 体重 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">体重</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="70.8" />
+                            <span class="ml-2 text-sm text-gray-500">公斤</span>
+                        </div>
+                    </div>
+                    
+                    <!-- BMI -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">BMI</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="24.4" />
+                            <span class="ml-2 text-sm text-gray-500">偏胖</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 胸围 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">胸围</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="输入胸围" />
+                            <span class="ml-2 text-sm text-gray-500">厘米</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 腰围 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">腰围</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="输入腰围" />
+                            <span class="ml-2 text-sm text-gray-500">厘米</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 臀围 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">臀围</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="输入臀围" />
+                            <span class="ml-2 text-sm text-gray-500">厘米</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 手臂围 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">手臂围</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="输入手臂围" />
+                            <span class="ml-2 text-sm text-gray-500">厘米</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 大腿围 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">大腿围</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="输入大腿围" />
+                            <span class="ml-2 text-sm text-gray-500">厘米</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 小腿围 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">小腿围</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="输入小腿围" />
+                            <span class="ml-2 text-sm text-gray-500">厘米</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 身高 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">身高</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="170" />
+                            <span class="ml-2 text-sm text-gray-500">厘米</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 体脂率 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">体脂率</label>
+                        <div class="flex items-center">
+                            <input type="number" step="0.1" class="form-input flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="22.8" />
+                            <span class="ml-2 text-sm text-gray-500">%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end pt-4">
+                        <button type="button" id="cancel-body-data" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg mr-2">取消</button>
+                        <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 热量趋势图
-            const calorieCtx = document.getElementById('calorieChart').getContext('2d');
-            const calorieChart = new Chart(calorieCtx, {
-                type: 'line',
-                data: {
-                    labels: ['4.25', '4.26', '4.27', '4.28', '4.29', '4.30', '5.1'],
-                    datasets: [{
-                        label: '热量摄入',
-                        data: [1320, 1180, 1210, 1100, 1150, 1090, 1146],
-                        borderColor: 'rgba(59, 130, 246, 1)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            min: 500,
-                            max: 2500,
-                            ticks: {
-                                stepSize: 500
-                            }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            radius: 3,
-                            hoverRadius: 5
-                        }
-                    }
-                }
-            });
-            
             // 体重趋势图
-            const weightCtx = document.getElementById('weightChart').getContext('2d');
-            const weightChart = new Chart(weightCtx, {
+            const weightTrendCtx = document.getElementById('weightTrendChart').getContext('2d');
+            const weightTrendChart = new Chart(weightTrendCtx, {
                 type: 'line',
                 data: {
-                    labels: ['3.15', '3.30', '4.15', '4.30', '5.15', '5.30'],
+                    labels: ['2024.5', '2025.5'],
                     datasets: [{
                         label: '体重(kg)',
-                        data: [72.5, 71.8, 70.6, 69.4, 68.5, null],
+                        data: [70.8, 73.8],
                         borderColor: 'rgba(16, 185, 129, 1)',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         tension: 0.3,
@@ -392,55 +527,201 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: {
-                            min: 60,
+                            min: 65,
                             max: 75,
                             ticks: {
                                 stepSize: 5
                             }
                         }
                     },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     elements: {
                         point: {
-                            radius: 3,
-                            hoverRadius: 5
+                            radius: 4,
+                            hoverRadius: 6
                         }
                     }
                 }
             });
             
-            // 身体指标图
-            const bodyStatsCtx = document.getElementById('bodyStatsChart').getContext('2d');
-            const bodyStatsChart = new Chart(bodyStatsCtx, {
-                type: 'line',
-                data: {
-                    labels: ['3.15', '3.30', '4.15', '4.30', '5.15', '5.30'],
-                    datasets: [{
-                        label: '体脂率(%)',
-                        data: [25.8, 25.2, 24.1, 23.5, 22.8, null],
-                        borderColor: 'rgba(245, 158, 11, 1)',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            min: 15,
-                            max: 30,
-                            ticks: {
-                                stepSize: 5
-                            }
-                        }
-                    },
-                    elements: {
-                        point: {
-                            radius: 3,
-                            hoverRadius: 5
-                        }
+            // 时间段选择
+            const timeFilterBtns = document.querySelectorAll('.time-filter-btn');
+            timeFilterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的active状态
+                    timeFilterBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.classList.add('text-gray-500');
+                    });
+                    
+                    // 添加当前按钮的active状态
+                    this.classList.add('active');
+                    this.classList.remove('text-gray-500');
+                    
+                    // 更新图表数据 (示例)
+                    let newLabels, newData;
+                    const timeRange = this.textContent;
+                    
+                    if (timeRange === '近30天') {
+                        newLabels = ['2024.5', '2025.5'];
+                        newData = [70.8, 73.8];
+                    } else if (timeRange === '半年') {
+                        newLabels = ['2023.12', '2024.2', '2024.4', '2025.5'];
+                        newData = [73.5, 72.2, 71.0, 73.8];
+                    } else if (timeRange === '年') {
+                        newLabels = ['2023.5', '2023.8', '2023.11', '2024.2', '2024.5'];
+                        newData = [75.0, 74.2, 73.8, 72.0, 73.8];
+                    } else { // 全部
+                        newLabels = ['2023.1', '2023.5', '2023.9', '2024.1', '2024.5', '2025.5'];
+                        newData = [78.0, 75.0, 74.0, 72.5, 71.5, 73.8];
                     }
+                    
+                    // 更新图表
+                    weightTrendChart.data.labels = newLabels;
+                    weightTrendChart.data.datasets[0].data = newData;
+                    weightTrendChart.update();
+                });
+            });
+            
+            // 数据类型选择
+            const dataTypeCards = document.querySelectorAll('.data-type-card');
+            dataTypeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // 移除所有卡片的active状态
+                    dataTypeCards.forEach(c => {
+                        c.classList.remove('active', 'bg-green-50', 'border-green-500');
+                        c.classList.add('bg-white', 'border-gray-200');
+                        const valueElement = c.querySelector('.text-lg');
+                        if (valueElement) {
+                            valueElement.classList.remove('text-green-500');
+                        }
+                    });
+                    
+                    // 添加当前卡片的active状态
+                    this.classList.add('active', 'bg-green-50', 'border-green-500');
+                    this.classList.remove('bg-white', 'border-gray-200');
+                    const valueElement = this.querySelector('.text-lg');
+                    if (valueElement) {
+                        valueElement.classList.add('text-green-500');
+                    }
+                    
+                    // 获取数据类型和值
+                    const dataType = this.querySelector('.text-sm').textContent;
+                    const dataValue = this.querySelector('.text-lg').textContent;
+                    const dataUnit = this.querySelector('.text-xs').textContent;
+                    
+                    // 更新标题显示
+                    const titleElement = document.querySelector('.bg-white.rounded-xl.p-4.mx-4.shadow-sm.mb-2 .flex.items-center');
+                    titleElement.innerHTML = `
+                        <span class="text-xl font-medium mr-1">${dataType}：</span>
+                        <span class="text-xl font-medium text-green-500">${dataValue}</span>
+                        <span class="text-lg ml-1">${dataUnit}</span>
+                    `;
+                    
+                    // 更新图表数据 (示例数据)
+                    let chartData;
+                    if (dataType === '体重') {
+                        chartData = {
+                            labels: ['2024.5', '2025.5'],
+                            data: [70.8, 73.8],
+                            color: 'rgba(16, 185, 129, 1)',
+                            bgColor: 'rgba(16, 185, 129, 0.1)'
+                        };
+                    } else if (dataType === 'BMI') {
+                        chartData = {
+                            labels: ['2024.5', '2025.5'],
+                            data: [24.8, 25.5],
+                            color: 'rgba(245, 158, 11, 1)',
+                            bgColor: 'rgba(245, 158, 11, 0.1)'
+                        };
+                    } else if (dataType === '体脂率') {
+                        chartData = {
+                            labels: ['2024.5', '2025.5'],
+                            data: [23.5, 22.8],
+                            color: 'rgba(59, 130, 246, 1)',
+                            bgColor: 'rgba(59, 130, 246, 0.1)'
+                        };
+                    } else {
+                        // 默认数据
+                        chartData = {
+                            labels: ['2024.5', '2025.5'],
+                            data: [90, 92],
+                            color: 'rgba(107, 114, 128, 1)',
+                            bgColor: 'rgba(107, 114, 128, 0.1)'
+                        };
+                    }
+                    
+                    // 更新图表
+                    weightTrendChart.data.labels = chartData.labels;
+                    weightTrendChart.data.datasets[0].label = `${dataType}(${dataUnit})`;
+                    weightTrendChart.data.datasets[0].data = chartData.data;
+                    weightTrendChart.data.datasets[0].borderColor = chartData.color;
+                    weightTrendChart.data.datasets[0].backgroundColor = chartData.bgColor;
+                    weightTrendChart.update();
+                });
+            });
+            
+            // 添加图表查看图片按钮点击事件
+            const viewImageBtn = document.querySelector('button[title="查看身材图片"]');
+            if (viewImageBtn) {
+                viewImageBtn.addEventListener('click', function() {
+                    alert('查看身材图片功能将在这里显示最近的身材照片');
+                });
+            }
+            
+            // 添加分享按钮点击事件
+            const shareBtn = document.querySelector('button[title="分享"]');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function() {
+                    alert('分享功能将允许用户分享当前身体数据到社交平台');
+                });
+            }
+            
+            // 添加全屏按钮点击事件
+            const fullscreenBtn = document.querySelector('button[title="全屏显示"]');
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', function() {
+                    alert('此功能将以全屏方式展示当前数据图表');
+                });
+            }
+
+            // 身体数据录入模态框控制
+            const addDataBtn = document.getElementById('add-data-btn');
+            const bodyDataModal = document.getElementById('body-data-modal');
+            const closeBodyDataBtn = document.getElementById('close-body-data');
+            const cancelBodyDataBtn = document.getElementById('cancel-body-data');
+            const bodyDataForm = document.getElementById('body-data-form');
+            
+            // 打开模态框
+            addDataBtn.addEventListener('click', function() {
+                bodyDataModal.classList.remove('hidden');
+            });
+            
+            // 关闭模态框
+            closeBodyDataBtn.addEventListener('click', function() {
+                bodyDataModal.classList.add('hidden');
+            });
+            
+            cancelBodyDataBtn.addEventListener('click', function() {
+                bodyDataModal.classList.add('hidden');
+            });
+            
+            // 表单提交
+            bodyDataForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // 这里可以添加表单数据处理逻辑
+                alert('身体数据已保存！');
+                bodyDataModal.classList.add('hidden');
+            });
+            
+            // 点击模态框外部关闭
+            bodyDataModal.addEventListener('click', function(e) {
+                if (e.target === bodyDataModal) {
+                    bodyDataModal.classList.add('hidden');
                 }
             });
         });
